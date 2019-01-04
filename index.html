@@ -107,6 +107,18 @@
             }
         }
 
+        function handleRemoveGoal(goal) {
+            return (dispatch) => {
+                dispatch(removeGoalAction(goal.id));
+
+                API.deleteGoal(goal.id)
+                    .catch(() => {
+                        alert('Error on deleting. Try again!');
+                        dispatch(addGoalAction(goal));
+                    });
+            }
+        }
+
         function removeGoalAction(id) {
             return {
                 type: REMOVE_GOAL,
@@ -252,13 +264,7 @@
             };
 
             removeGoal = (goal) => {
-                this.props.store.dispatch(removeGoalAction(goal.id));
-
-                API.deleteGoal(goal.id)
-                    .catch(() => {
-                        alert('Error on deleting. Try again!');
-                        this.props.store.dispatch(addGoalAction(goal));
-                    });
+                this.props.state.disptach(handleRemoveGoal(goal));
             };
 
             render(){
