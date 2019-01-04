@@ -60,7 +60,6 @@
                         dispatch(addTodoAction(todo));
                     });
             }
-
         }
 
         function removeTodoAction(id) {
@@ -70,6 +69,16 @@
             }
         }
 
+        function handleToggleTodo(id){
+            return (dispatch) => {
+                dispatch(toggleTodoAction(id));
+                return API.saveTodoToggle(id)
+                    .catch(() => {
+                        dispatch(toggleTodoAction(id));
+                        alert("Toggle Error. Try again!");
+                    });
+            }
+        }
 
         function toggleTodoAction(id) {
             return {
@@ -200,13 +209,9 @@
             };
 
             toggleTodo = (id) => {
-                store.dispatch(toggleTodoAction(id));
-                return API.saveTodoToggle(id)
-                    .catch(() => {
-                        store.dispatch(toggleTodoAction(id));
-                        alert("Toggle Error. Try again!");
-                    });
+                 this.props.store.dispatch(handleToggleTodo(id))
             };
+
 
             render(){
                 return(
