@@ -134,6 +134,14 @@
             }
         }
 
+        function handleInitialData() {
+            return (dispatch) => {
+                Promise.all([API.fetchGoals(), API.fetchTodos()]).then(([goals, todos])=> {
+                    dispatch(receiveDataAction(todos, goals));
+                });
+            }
+        }
+
         function todo(state = [], action) {
             switch (action.type) {
                 case ADD_TODO :
@@ -287,10 +295,7 @@
             componentDidMount () {
                 const { store } = this.props;
 
-
-                Promise.all([API.fetchGoals(), API.fetchTodos()]).then(([goals, todos])=> {
-                    store.dispatch(receiveDataAction(todos, goals));
-                })
+                store.dispatch(handleInitialData());
 
                 store.subscribe(() => this.forceUpdate());
             }
