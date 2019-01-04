@@ -29,11 +29,38 @@
 
         //action creators
 
+        function handleAddTodo(todoName, cb) {
+            return (dispatch) => {
+                API.saveTodo(todoName)
+                    .then((todo) => {
+                        dispatch(addTodoAction(todo));
+                        cb();
+                    })
+                    .catch(() => {
+                        alert("There was an error on adding a todo. Try again!");
+                    })
+            };
+        }
+
         function addTodoAction(todo) {
             return {
                 type : ADD_TODO,
                 todo
             }
+        }
+
+        function handleDeleteTodo(todo) {
+
+            return (dispatch) => {
+                dispatch(removeTodoAction(todo.id));
+
+                return API.deleteTodo(todo.id)
+                    .catch(() => {
+                        alert('Error on deleting. Try again!');
+                        dispatch(addTodoAction(todo));
+                    });
+            }
+
         }
 
         function removeTodoAction(id) {
@@ -42,6 +69,7 @@
                 id
             }
         }
+
 
         function toggleTodoAction(id) {
             return {
@@ -70,20 +98,6 @@
                 todos,
                 goals
             }
-        }
-
-        function handleDeleteTodo(todo) {
-
-            return (dispatch) => {
-                dispatch(removeTodoAction(todo.id));
-
-                return API.deleteTodo(todo.id)
-                    .catch(() => {
-                        alert('Error on deleting. Try again!');
-                        dispatch(addTodoAction(todo));
-                    });
-            }
-
         }
 
         function todo(state = [], action) {
@@ -170,22 +184,17 @@
             )
         }
 
-
-
         class Todos extends React.Component{
+
             addTodoItem = (e) => {
                 e.preventDefault();
-
-                API.saveTodo(this.inputTodo.value)
-                    .then((todo) => {
-                        this.props.store.dispatch(addTodoAction(todo));
-                        this.inputTodo.value = '';
-                    })
-                    .catch(() => {
-                        alert("There was an error on adding a todo. Try again!")
-                    })
-
+                this.props.store.dispatch(handleAddTodo(
+                    this.input.value,
+                    () => {this.input.value = '';})
+                );
             };
+
+
             removeTodo = (todo) => {
                 this.props.store.dispatch(handleDeleteTodo(todo));
             };
