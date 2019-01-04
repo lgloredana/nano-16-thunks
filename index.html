@@ -87,6 +87,19 @@
             }
         }
 
+        function handleAddGoal(goalName, cb){
+            return (dispatcher) => {
+                API.saveGoal(goalName)
+                    .then((goal) => {
+                        dispatch(addGoalAction(goal));
+                        cb();
+                    })
+                    .catch(() => {
+                        alert('Error on adding a goal. Try again!');
+                    })
+            }
+        }
+
         function addGoalAction(goal) {
             return {
                 type : ADD_GOAL,
@@ -232,19 +245,11 @@
         class Goals extends React.Component{
             addGoalItem = (e) => {
                 e.preventDefault();
-
-                API.saveGoal(this.inputGoal.value)
-                    .then((goal) => {
-                        this.props.store.dispatch(addGoalAction(goal));
-                        this.inputGoal.value = '';
-                    })
-                    .catch(() => {
-                        alert('Error on adding a goal. Try again!');
-                    })
-
+                this.props.state.dispatch(handleAddGoal(
+                    this.inputGoal.value,
+                    () => {this.inputGoal.value = ''}
+                ));
             };
-
-
 
             removeGoal = (goal) => {
                 this.props.store.dispatch(removeGoalAction(goal.id));
