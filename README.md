@@ -1,5 +1,6 @@
 # The purpose of this project
 This is a project which allows to see how the Redux and React libraries works together. 
+Here is shown how the ReduxThunk lib can be used as a middleware for separating API calls from UI logic.
 
 Summary  
  - Shows how to convert a plain HTML application to one using React Components.   
